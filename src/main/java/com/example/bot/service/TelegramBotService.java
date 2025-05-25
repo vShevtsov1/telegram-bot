@@ -20,6 +20,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import static org.telegram.abilitybots.api.objects.Locality.ALL;
@@ -28,6 +29,8 @@ import static org.telegram.abilitybots.api.objects.Privacy.PUBLIC;
 @Component
 public class TelegramBotService extends AbilityBot {
 
+    @Autowired
+    private UsersService usersService;
     private final MonoBankClient monoBankClient;
     private final Map<Long, Boolean> awaitingTopUpAmount = new HashMap<>();
 
@@ -151,7 +154,10 @@ public class TelegramBotService extends AbilityBot {
                 .info("Главное меню")
                 .locality(ALL)
                 .privacy(PUBLIC)
-                .action(ctx -> sendMenu(ctx.chatId()))
+                .action(ctx ->{
+                    usersService.registerUserIfNotExists(ctx);
+                    sendMenu(ctx.chatId())   ;
+                })
                 .build();
     }
 
@@ -162,11 +168,13 @@ public class TelegramBotService extends AbilityBot {
                 .locality(ALL)
                 .privacy(PUBLIC)
                 .action(ctx -> {
+                    BigDecimal balance = usersService.getUserBalanceByContext(ctx);
+
                     String profile = String.format("""
-                            ❤️ Имя: ^_^
+                            ❤️ Имя: %s
                             🔑 ID: %d
-                            💰 Ваш баланс: 0 $
-                            """, ctx.user().getId());
+                            💰 Ваш баланс: %s $
+                            """, ctx.user().getFirstName(), ctx.user().getId(), balance);
 
                     SendMessage message = new SendMessage();
                     message.setChatId(ctx.chatId().toString());
