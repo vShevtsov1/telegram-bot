@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title>Создание товара</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="card">
+        <div class="card-body">
+            <form th:action="@{/products}" th:object="${product}" method="post" enctype="multipart/form-data">
+                <input type="hidden" th:field="*{id}">
+                <div class="form-group">
+                    <label>Название</label>
+                    <input type="text" th:field="*{name}" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Описание</label>
+                    <textarea th:field="*{description}" class="form-control" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Категория</label>
+                    <select th:field="*{category.id}" class="form-control" required>
+                        <option th:each="category : ${categories}"
+                                th:value="${category.id}"
+                                th:text="${category.name}">
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Фото</label>
+                    <input type="file" name="imageFile" class="form-control">
+                    <div th:if="${product.image != null}">
+                        <img th:src="'data:image/png;base64,' + ${product.image}" style="width: 100px; margin-top: 10px;">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success">Сохранить</button>
+            </form>
+        </div>
+    </div>
+</section>
+</body>
+</html>

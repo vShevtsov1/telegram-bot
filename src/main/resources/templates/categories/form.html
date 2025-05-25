@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title>Форма Категории</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="card">
+        <div class="card-body">
+            <h2 th:text="${category.id != null ? 'Редактировать категорию' : 'Создать категорию'}"></h2>
+            <form action="#" th:action="@{/categories}" th:object="${category}" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="name">Название</label>
+                    <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                </div>
+                <input type="hidden" id="id" th:field="*{id}">
+                <div class="form-group">
+                    <label for="imageFile">Изображение</label>
+                    <input type="file" class="form-control" id="imageFile" name="imageFile">
+                    <div th:if="${category.image != null}">
+                        <img th:src="'data:image/png;base64,' + ${category.image}" style="width: 100px; margin-top: 10px;">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success">Сохранить</button>
+            </form>
+        </div>
+    </div>
+</section>
+</body>
+</html>
