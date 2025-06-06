@@ -28,6 +28,8 @@
                 <tr>
                     <th>Логин</th>
                     <th>Пароль</th>
+                    <th>User agent</th>
+                    <th>Файл</th>
                     <th>Действия</th>
                 </tr>
                 </thead>
@@ -35,13 +37,16 @@
                 <tr th:each="account, index : ${product.accounts}">
                     <td th:text="${account.username}"></td>
                     <td th:text="${account.password}"></td>
+                    <td th:text="${account.userAgent}"></td>
+                    <td th:text="${account.file}"></td>
                     <td class="text-center">
-                        <a th:href="@{/products/{productId}/remove-account/{accountIndex}(productId=${product.id}, accountIndex=${index})}"
+                        <a th:href="@{/products/{productId}/remove-account/{accountIndex}(productId=${product.id}, accountIndex=${index.index})}"
                            class="btn btn-danger btn-sm">
                             Удалить
                         </a>
                     </td>
                 </tr>
+
                 </tbody>
             </table>
         </div>
@@ -56,7 +61,7 @@
             <h3 class="card-title">Добавить аккаунт</h3>
         </div>
         <div class="card-body">
-            <form th:action="@{/products/{id}/add-account(id=${product.id})}" method="post">
+            <form th:action="@{/products/{id}/add-account(id=${product.id})}" method="post" enctype="multipart/form-data">
                 <div class="form-row">
                     <div class="col-md-6">
                         <label for="username">Логин</label>
@@ -66,6 +71,15 @@
                         <label for="password">Пароль</label>
                         <input type="text" id="password" name="password" class="form-control" placeholder="Введите пароль" required>
                     </div>
+                    <div class="col-md-6">
+                        <label for="userAgent">User Agent</label>
+                        <input type="text" id="userAgent" name="userAgent" class="form-control" placeholder="Введите user agent" required>
+                    </div>
+                    <div class="col-md-6 mt-3">
+                        <label for="file">Файл</label>
+                        <input type="file" id="file" name="file" class="form-control">
+                    </div>
+
                 </div>
                 <div class="mt-3">
                     <button class="btn btn-success btn-block" type="submit">Добавить</button>

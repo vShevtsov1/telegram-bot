@@ -1,9 +1,30 @@
 package com.example.bot.model;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class Account {
 
     private String username; // Логин
     private String password; // Пароль
+    private String userAgent;
+    private String file;
+
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
+    }
 
     // Конструкторы
     public Account() {}

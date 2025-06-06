@@ -7,6 +7,8 @@ import com.example.bot.model.ProductWithAvailabilityDto;
 import com.example.bot.repository.CategoryRepository;
 import com.example.bot.repository.ProductRepository;
 import com.example.bot.service.ProductsService;
+import com.example.bot.service.S3Service;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -30,6 +32,9 @@ public class ProductController {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private S3Service s3Service;
 
     @GetMapping
     public String listProducts(Model model) {
@@ -92,9 +97,14 @@ public class ProductController {
     @PostMapping("/{id}/add-account")
     public String addAccountToProduct(@PathVariable("id") String id,
                                       @RequestParam("username") String username,
-                                      @RequestParam("password") String password) {
+                                      @RequestParam("password") String password,
+                                        @RequestParam("userAgent") String userAgent,
+                                      @RequestParam("file") MultipartFile file
+
+    ) throws IOException {
+
         Product product = productRepository.findById(id).orElseThrow();
-        product.getAccounts().add(new Account(username, password));
+        product.getAccounts().add(new Account(username, password,userAgent, s3Service.uploadFile(file)));
         productRepository.save(product);
         return "redirect:/products/" + id;
     }

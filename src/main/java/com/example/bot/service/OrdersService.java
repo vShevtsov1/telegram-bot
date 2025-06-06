@@ -138,8 +138,16 @@ public class OrdersService {
             List<Account> accountsForOrder = orderCredentials.get(product.getId());
             for (Account account : accountsForOrder) {
                 messageBuilder.append("   🔑 Логін: `").append(account.getUsername()).append("`\n");
-                messageBuilder.append("   🔒 Пароль: `").append(account.getPassword()).append("`\n\n");
+                messageBuilder.append("   🔒 Пароль: `").append(account.getPassword()).append("`\n");
+                messageBuilder.append("   🌐 User-Agent: `").append(account.getUserAgent()).append("`\n");
+
+                if (account.getFile() != null && !account.getFile().isEmpty()) {
+                    messageBuilder.append("   📎 Посилання на файл: [Відкрити](").append(account.getFile()).append(")\n");
+                }
+
+                messageBuilder.append("\n");
             }
+
         }
 
         String message = messageBuilder.toString();
