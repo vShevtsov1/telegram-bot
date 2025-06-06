@@ -15,6 +15,7 @@ public class Product {
     private String id;
     private String name; // Название товара
     private String description; // Описание товара
+    private Double price;
     private String image; // Фото (в формате Base64)
 
     @DBRef
@@ -31,6 +32,23 @@ public class Product {
         this.image = image;
         this.category = category;
         this.accounts = accounts;
+    }
+
+    public Product(String name, String description, Double price, String image, Category category, List<Account> accounts) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.image = image;
+        this.category = category;
+        this.accounts = accounts;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
     public String getId() {

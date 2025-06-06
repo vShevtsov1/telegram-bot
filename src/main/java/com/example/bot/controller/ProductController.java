@@ -3,16 +3,20 @@ package com.example.bot.controller;
 import com.example.bot.entity.Category;
 import com.example.bot.entity.Product;
 import com.example.bot.model.Account;
+import com.example.bot.model.ProductWithAvailabilityDto;
 import com.example.bot.repository.CategoryRepository;
 import com.example.bot.repository.ProductRepository;
+import com.example.bot.service.ProductsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import java.util.*;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/products")
@@ -22,9 +26,11 @@ public class ProductController {
     private ProductRepository productRepository;
 
     @Autowired
+    private ProductsService productsService;
+
+    @Autowired
     private CategoryRepository categoryRepository;
 
-    // Просмотр товаров
     @GetMapping
     public String listProducts(Model model) {
         model.addAttribute("products", productRepository.findAll());
@@ -32,7 +38,6 @@ public class ProductController {
         return "products/list";
     }
 
-    // Создание нового товара
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("product", new Product());
@@ -62,7 +67,6 @@ public class ProductController {
         return "redirect:/products";
     }
 
-    // Редактирование товара
     @GetMapping("/edit/{id}")
     public String editProduct(@PathVariable("id") String id, Model model) {
         model.addAttribute("product", productRepository.findById(id).orElseThrow());
@@ -71,14 +75,12 @@ public class ProductController {
         return "products/form";
     }
 
-    // Удаление товара
     @GetMapping("/delete/{id}")
     public String deleteProduct(@PathVariable("id") String id) {
         productRepository.deleteById(id);
         return "redirect:/products";
     }
 
-    // Просмотр деталей товара
     @GetMapping("/{id}")
     public String viewProductDetails(@PathVariable("id") String id, Model model) {
         Product product = productRepository.findById(id).orElseThrow();
@@ -87,7 +89,6 @@ public class ProductController {
         return "products/details";
     }
 
-    // Добавление логина и пароля к товару
     @PostMapping("/{id}/add-account")
     public String addAccountToProduct(@PathVariable("id") String id,
                                       @RequestParam("username") String username,
@@ -98,7 +99,6 @@ public class ProductController {
         return "redirect:/products/" + id;
     }
 
-    // Удаление логина и пароля из товара
     @GetMapping("/{productId}/remove-account/{accountIndex}")
     public String removeAccountFromProduct(@PathVariable("productId") String productId,
                                            @PathVariable("accountIndex") int accountIndex) {
@@ -107,4 +107,29 @@ public class ProductController {
         productRepository.save(product);
         return "redirect:/products/" + productId;
     }
+
+    @GetMapping("/by-category/{categoryId}")
+    public ResponseEntity<List<Product>> getProductsByCategoryId(@PathVariable String categoryId) {
+        List<Product> products = productRepository.findByCategory_Id(categoryId);
+
+        List<Product> filteredProducts = products.stream()
+                .filter(product -> product.getAccounts() != null && !product.getAccounts().isEmpty())
+                .collect(Collectors.toList());
+
+        if (filteredProducts.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        filteredProducts.forEach(product -> product.setAccounts(new ArrayList<>()));
+
+        return ResponseEntity.ok(filteredProducts);
+    }
+
+
+    @PostMapping("/api/by-ids")
+    @ResponseBody
+    public List<ProductWithAvailabilityDto> getProductsByIds(@RequestBody List<String> ids) {
+        return productsService.getProductsWithAvailability(ids);
+    }
+
 }

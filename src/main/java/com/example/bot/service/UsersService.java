@@ -20,8 +20,10 @@ public class UsersService {
         Long telegramId = ctx.user().getId();
         String username = ctx.user().getUserName();
 
+        Long chatId = ctx.chatId();
         return usersRepository.findByTelegramId(telegramId).orElseGet(() -> {
             Users user = new Users();
+            user.setChatId(chatId);
             user.setTelegramId(telegramId);
             user.setUsername(username);
             user.setBalance(BigDecimal.ZERO);
@@ -48,6 +50,14 @@ public class UsersService {
         return usersRepository.findByTelegramId(telegramId)
                 .map(Users::getBalance)
                 .orElse(BigDecimal.ZERO);
+    }
+
+    public BigDecimal getUserBalanceByChatId(Long chatId) {
+        return usersRepository.findByTelegramId(chatId).get().getBalance();
+    }
+
+    public String getUserReferralCode(Long chatId) {
+        return usersRepository.findByTelegramId(chatId).get().getReferralCode();
     }
 
 }

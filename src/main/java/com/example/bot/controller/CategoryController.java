@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.List;
 
 @Controller
 @RequestMapping("/categories")
@@ -18,7 +19,6 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
-    // Показать список категорий
     @GetMapping
     public String listCategories(Model model) {
         model.addAttribute("categories", categoryService.getAllCategories());
@@ -27,7 +27,6 @@ public class CategoryController {
         return "categories/list";
     }
 
-    // Показать форму создания новой категории
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("category", new Category());
@@ -36,7 +35,6 @@ public class CategoryController {
         return "categories/form";
     }
 
-    // Сохранить категорию
     @PostMapping
     public String saveCategory(
             @ModelAttribute("category") Category category,
@@ -76,5 +74,10 @@ public class CategoryController {
     public String deleteCategory(@PathVariable("id") String id) {
         categoryService.deleteCategory(id);
         return "redirect:/categories";
+    }
+    @GetMapping("/api")
+    @ResponseBody
+    public List<Category> getAllCategoriesApi() {
+        return categoryService.getAllCategories();
     }
 }

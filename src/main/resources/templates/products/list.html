@@ -17,6 +17,7 @@
                     <th>ID</th>
                     <th>Название</th>
                     <th>Категория</th>
+                    <th>Цена</th>
                     <th>Фото</th>
                     <th>Действия</th>
                 </tr>
@@ -29,6 +30,7 @@
                         <span th:if="${product.category != null}" th:text="${product.category.name}"></span>
                         <span th:if="${product.category == null}">Без категории</span>
                     </td>
+                    <td th:text="${product.price}"></td>
                     <td>
                         <img th:src="'data:image/png;base64,' + ${product.image}" style="width: 50px;">
                     </td>

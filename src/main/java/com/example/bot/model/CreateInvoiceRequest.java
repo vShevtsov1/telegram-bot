@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateInvoiceRequest {
     private int amount;
-    private int ccy = 980;
+    private int ccy = 840;
     private String redirectUrl = "http://localhost:8080/";
-    private String webHookUrl = "http://localhost:8080/";
+    private String webHookUrl = "http://91.99.117.156:3000/callback";
     private int validity = 3600;
 
     public CreateInvoiceRequest(int amount) {

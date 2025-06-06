@@ -22,7 +22,7 @@ public class Users {
     private String username;
     private BigDecimal balance = BigDecimal.ZERO;
     private Instant createdAt = Instant.now();
-
+    private Long chatId;
     private String referralCode;
     private String referredBy;
 }
